@@ -7,17 +7,20 @@
 
 #include "stm32f407xx.h"                  // Device header
 #include "game_engine.h"
-#include "../Peripheral_drivers/inc/stm32f407xx_uart.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 
 extern uint8_t frameUpdate;
-extern uint8_t numOfAsteroid;
 
-Space_Object_t Asteroid[NUM_OF_ASTEROID] ;
-Space_Object_t PlayerSpaceship;
-Space_Object_t Rocket[NUM_OF_ROCKET] ;
+extern Space_Object_t PlayerSpaceship;
+extern Space_Object_t Asteroid[RTE_ASTEROID_BUFFER_SIZE] ;
+extern Space_Object_t Rocket[RTE_ROCKET_BUFFER_SIZE];
+
+extern vector AsteroidVect;
+extern vector RocketVect;
+
+extern uint8_t currentWave;
+extern uint8_t numOfAsteroidInWave[RTE_NUM_OF_WAVE];
 
 void delay(volatile uint32_t delay)
 {
@@ -40,8 +43,8 @@ int main (void)
 		RTE_create_player_spaceship(&PlayerSpaceship);
 		RTE_draw_player_spaceship(&PlayerSpaceship);
 
-		RTE_create_asteroid(Asteroid,numOfAsteroid,&PlayerSpaceship);
-		RTE_draw_asteroid(Asteroid,numOfAsteroid);
+		RTE_create_asteroid(&AsteroidVect,Asteroid,numOfAsteroidInWave[currentWave],&PlayerSpaceship);
+		RTE_draw_asteroid(&AsteroidVect);
 		RNG_deinit();
 
 		RTE_start_update_frame();
@@ -55,12 +58,12 @@ int main (void)
 				RTE_update_player_spaceship(&PlayerSpaceship);
 				RTE_draw_player_spaceship(&PlayerSpaceship);
 
-				RTE_create_rocket(Rocket,&PlayerSpaceship);
-				RTE_update_rocket(Rocket);
-				RTE_draw_rocket(Rocket);
+				RTE_create_rocket(&RocketVect,Rocket,&PlayerSpaceship);
+				RTE_update_rocket(&RocketVect,&AsteroidVect);
+				RTE_draw_rocket(&RocketVect);
 
-				RTE_update_asteroid(Asteroid,numOfAsteroid,&PlayerSpaceship,Rocket);
-				RTE_draw_asteroid(Asteroid,numOfAsteroid);
+				RTE_update_asteroid(&AsteroidVect,&PlayerSpaceship);
+				RTE_draw_asteroid(&AsteroidVect);
 
 				if(PlayerSpaceship.Object_Property.aliveFlag == RTE_ALIVE_FALSE){
 					led_on(GPIOD,GPIO_PIN_NO_13);
@@ -69,7 +72,15 @@ int main (void)
 					RTE_reset_game();
 					break;
 				}
-	
+
+				if(AsteroidVect.total == 0){
+					TIM_ctr(TIM6,STOP);
+					currentWave++;
+					RNG_init();
+					RTE_create_asteroid(&AsteroidVect,Asteroid,numOfAsteroidInWave[currentWave],&PlayerSpaceship);
+					TIM_ctr(TIM6,START);
+				}
+
 				frameUpdate = CLEAR;
 			}
 		}
