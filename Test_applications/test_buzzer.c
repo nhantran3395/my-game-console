@@ -13,20 +13,22 @@
 
 #include "stm32f4xx.h"                  // Device header
 #include "../Peripheral_drivers/inc/stm32f407xx_gpio.h"
+#include "../Peripheral_drivers/inc/stm32f407xx_rcc.h"
 #include "../Device_drivers/inc/led.h"
 #include "../Device_drivers/inc/button.h"
+#include "../../Miscellaneous/inc/notes.h"
 #include "../Device_drivers/inc/buzzer.h"
-#include "../Miscellaneous/inc/notes.h"
 
 int main (void)
 {
+//	RCC_set_SYSCLK_PLL_84_MHz();
 	/*initilize led on PD12*/
 	led_init(GPIOD,GPIO_PIN_NO_12);
 	
 	/*initilize user button on PA0*/
 	button_init(GPIOA,GPIO_PIN_NO_0,GPIO_NO_PUPDR);
 	
-	buzzer_init(DAC_CHANNEL_2);
+	buzzer_init(DAC_CHANNEL_1);
 	
 	while(1){
 		if(button_read(GPIOA,GPIO_PIN_NO_0)){

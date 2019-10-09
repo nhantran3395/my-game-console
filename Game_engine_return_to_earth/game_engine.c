@@ -10,6 +10,12 @@
 
 #include "game_engine.h"
 #include "../Miscellaneous/inc/bitmap_byte_array.h"
+#include "../Miscellaneous/inc/rocket_launch.h"
+#include "../Miscellaneous/inc/spaceship_explode.h"
+#include "../Miscellaneous/inc/spaceship_thruster.h"
+#include "../Miscellaneous/inc/asteroid_impact.h"
+#include "../Miscellaneous/inc/asteroid_large_explode.h"
+#include "../Miscellaneous/inc/asteroid_medium_explode.h"
 
 /***********************************************************************
 External function prototype
@@ -67,13 +73,17 @@ void RTE_init (void)
 	ILI9341_rotate(ILI9341_orientation_landscape_2);
 	ILI9341_fill_display(ILI9341_BLACK);
 	
-	joystick_init(ADC1,ADC_CHANNEL_7,ADC_CHANNEL_6);
+	joystick_init(JOYSTICK_ADC,JOYSTICK_X_ADC_CHANNEL,JOYSTICK_Y_ADC_CHANNEL);
 	
+	speaker_init(DAC_CHANNEL_1,9,679);
+
 	button_init(SHOOT_BUTTON_PORT,SHOOT_BUTTON_PIN,GPIO_PU);
 	button_init(THRUST_BUTTON_PORT,THRUST_BUTTON_PIN,GPIO_PU);
 	
-	led_init(GPIOD,GPIO_PIN_NO_12);
-	led_init(GPIOD,GPIO_PIN_NO_14);
+	led_init(PROTOBOARD_RED_LED_PORT,PROTOBOARD_RED_LED_PIN);
+	led_init(PROTOBOARD_GREEN_LED_PORT,PROTOBOARD_GREEN_LED_PIN);
+	led_init(PROTOBOARD_BLUE_LED_PORT,PROTOBOARD_BLUE_LED_PIN);
+	led_init(PROTOBOARD_WHITE_LED_PORT,PROTOBOARD_WHITE_LED_PIN);
 	
 	/*configure timer 6 to generate periodic interrupt of 33ms (screen refresh rate 30Hz)*/
 	TIM_init_direct(TIM6,1874,999);
@@ -195,7 +205,9 @@ void RTE_create_rocket (vector *RocketVectPtr, Space_Object_t *RocketPtr, Space_
 
 			shootButtonFirstTimeFlag = RTE_FIRST_TIME_FALSE;
 
-			led_on(GPIOD,GPIO_PIN_NO_14);
+			PROTOBOARD_WHITE_LED_ON;
+
+			speaker_play_sound(rocket_launch,sizeof(rocket_launch)/sizeof(rocket_launch[0]));
 
 			scorePrevious = score;
 			score--;
@@ -314,7 +326,7 @@ void RTE_create_rocket (vector *RocketVectPtr, Space_Object_t *RocketPtr, Space_
 			}
 		}
 	}else{
-		led_off(GPIOD,GPIO_PIN_NO_14);
+		PROTOBOARD_WHITE_LED_OFF;
 	}
 }
 
@@ -398,6 +410,8 @@ void RTE_update_asteroid (vector *AsteroidVectPtr, Space_Object_t *PlayerSpaceSh
 						AsteroidPtr->Object_Property.dy *= -1;
 						OtherAsteroidPtr->Object_Property.dx *= -1;
 						OtherAsteroidPtr->Object_Property.dy *= -1;
+
+						speaker_play_sound(asteroid_impact,sizeof(asteroid_impact)/sizeof(asteroid_impact[0]));
 					}
 				}
 			}
@@ -408,6 +422,9 @@ void RTE_update_asteroid (vector *AsteroidVectPtr, Space_Object_t *PlayerSpaceSh
 
 			/*if collided mark player spaceship as dead and return to main loop*/
 			PlayerSpaceShipPtr->Object_Property.aliveFlag = RTE_ALIVE_FALSE;
+
+			speaker_play_sound(spaceship_explode,sizeof(spaceship_explode)/sizeof(spaceship_explode[0]));
+
 			return;
 		}
 	}
@@ -460,7 +477,10 @@ void RTE_update_rocket (vector *RocketVectPtr, vector *AsteroidVectPtr)
 				/*if asteroid that was hit is large one, create 2 medium asteroids*/
 				if(AsteroidPtr->Object_Property.asteroidSize == RTE_ASTEROID_SIZE_L){
 					RTE_create_medium_asteroid(AsteroidVectPtr,AsteroidPtr);
+					speaker_play_sound(asteroid_large_explode,sizeof(asteroid_large_explode)/sizeof(asteroid_large_explode[0]));
 					break;
+				}else if (AsteroidPtr->Object_Property.asteroidSize == RTE_ASTEROID_SIZE_M){
+					speaker_play_sound(asteroid_medium_explode,sizeof(asteroid_medium_explode)/sizeof(asteroid_medium_explode[0]));
 				}
 			}
 
@@ -592,7 +612,7 @@ Private function: Update player spaceship direction
 void RTE_update_player_spaceship_direction (Space_Object_t *PlayerSpaceShipPtr)
 {
 	uint8_t direction = 0;
-	direction = joystick_read_direction (ADC1,ADC_CHANNEL_7, ADC_CHANNEL_6);
+	direction = joystick_read_direction (JOYSTICK_ADC,JOYSTICK_X_ADC_CHANNEL, JOYSTICK_Y_ADC_CHANNEL);
 	
 	if (direction == JS_DIR_CENTERED){
 		return;
@@ -681,8 +701,10 @@ void RTE_update_player_spaceship_position (Space_Object_t *PlayerSpaceShipPtr)
 		int8_t ddx = 0;
 		int8_t ddy = 0;
 
-		led_on(GPIOD,GPIO_PIN_NO_12);
+		PROTOBOARD_BLUE_LED_ON;
 		
+		speaker_play_sound(spaceship_thruster,sizeof(spaceship_thruster)/sizeof(spaceship_thruster[0]));
+
 		if(PlayerSpaceShipPtr->Object_Property.headingDir == RTE_HEADING_DIR_N){
 			ddx	= 0;
 			ddy = -RTE_PLAYER_BASE_ACCELERATION;
@@ -719,7 +741,7 @@ void RTE_update_player_spaceship_position (Space_Object_t *PlayerSpaceShipPtr)
 	
 	}else{
 		
-		led_off(GPIOD,GPIO_PIN_NO_12);
+		PROTOBOARD_BLUE_LED_OFF;
 
 		PlayerSpaceShipPtr->Object_Property.x += PlayerSpaceShipPtr->Object_Property.dx;
 		PlayerSpaceShipPtr->Object_Property.y += PlayerSpaceShipPtr->Object_Property.dy;

@@ -25,7 +25,7 @@
 
 int main (void)
 {
-	RCC_set_SYSCLK_PLL_84_MHz();
+//	RCC_set_SYSCLK_PLL_84_MHz();
 	ILI9341_init();
 	ILI9341_rotate(ILI9341_orientation_landscape_2);
 	ILI9341_fill_display(ILI9341_ORANGE);

@@ -23,6 +23,8 @@
 #define WRITE 0
 #define ON 1
 #define OFF 0
+#define TRUE	1
+#define	FALSE	0
 
 /*
 *ARM cortex M4 Processor NVIC IPR register base address

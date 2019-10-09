@@ -74,7 +74,7 @@ Macro definition
 #define RCC_SYSCLK_PLL		2
 
 #define RCC_PLL_84_VCO_INPUT_DIV				8
-#define RCC_PLL_84_VCO_OUTPUT_MUL 	280
+#define RCC_PLL_84_VCO_OUTPUT_MUL 	300
 #define RCC_PLL_84_PLL_OUTPUT_DIV			0
 #define RCC_PLL_84_MAIN_PLL_DIV						7
 

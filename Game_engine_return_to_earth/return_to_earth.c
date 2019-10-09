@@ -29,14 +29,10 @@ void delay(volatile uint32_t delay)
 
 int main (void)
 {
-	led_init(GPIOD,GPIO_PIN_NO_13);
-	led_init(GPIOD,GPIO_PIN_NO_15);
-
-	RTE_init();	
-		
+	RTE_init();
 	RTE_display_start_screen();
 	while(SHOOT_BUTTON_READ);
-	
+
 	while(1){
 
 		RTE_display_black_background();
@@ -66,10 +62,11 @@ int main (void)
 				RTE_draw_asteroid(&AsteroidVect);
 
 				if(PlayerSpaceship.Object_Property.aliveFlag == RTE_ALIVE_FALSE){
-					led_on(GPIOD,GPIO_PIN_NO_13);
+					PROTOBOARD_GREEN_LED_ON;
 					RTE_display_game_over_screen();
 					while(SHOOT_BUTTON_READ);
 					RTE_reset_game();
+					PROTOBOARD_GREEN_LED_OFF;
 					break;
 				}
 
@@ -89,6 +86,6 @@ int main (void)
 
 void HardFault_Handler(void)
 {
-	led_on(GPIOD,GPIO_PIN_NO_15);
+	PROTOBOARD_RED_LED_ON;
 	while(1);
 }

@@ -9,6 +9,12 @@
 *@date 20/08/2019
 */
 
+/**
+*@Version 1.1
+*Date 21/09/2019
+*Add TIM_reset_counter function
+*/
+
 #ifndef STM32F407XX_TIMER_H
 #define STM32F407XX_TIMER_H
 
@@ -78,6 +84,13 @@ void TIM_init_direct(TIM_TypeDef *TIMxPtr,uint16_t reloadVal,uint16_t preScaler)
 void TIM_deinit(TIM_TypeDef *TIMxPtr);
 
 /**
+*@brief 	Reset timer 's counter
+*@param 	Pointer to base address of timer
+*@return 	None
+*/
+void TIM_reset_counter(TIM_TypeDef *TIMxPtr);
+
+/**
 *@brief Set timer 's reload value
 *@param Pointer to base address of timer
 *@param Reload value
@@ -91,7 +104,7 @@ void TIM_set_reload_val(TIM_TypeDef *TIMxPtr, uint16_t reloadVal);
 *@param Prescaler
 *@return none
 */
-void TIM_ser_prescaler(TIM_TypeDef *TIMxPtr, uint16_t prescaler);
+void TIM_set_prescaler(TIM_TypeDef *TIMxPtr, uint16_t prescaler);
 
 /**
 *@brief Enable or disable interrupt for update event of timer

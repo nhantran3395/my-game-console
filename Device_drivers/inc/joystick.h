@@ -23,10 +23,10 @@ Macro definition
 /*
 *X axis and Y axis position threshold (in 12 bits digital number)
 */
-#define X_POS_THRES_L 1950
-#define X_POS_THRES_H 2075
-#define Y_POS_THRES_L 2330
-#define Y_POS_THRES_H 2400
+#define X_POS_THRES_L 2000
+#define X_POS_THRES_H 2150
+#define Y_POS_THRES_L 1925
+#define Y_POS_THRES_H 2075
 
 /*
 *X axis and Y axis direction

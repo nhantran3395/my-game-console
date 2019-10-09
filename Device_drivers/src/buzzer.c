@@ -17,36 +17,38 @@ uint16_t sineWaveTable[SAMPLE_NUM] = {2048,3251,3995,3996,3253,2051,847,101,98,8
 uint8_t count = 0;
 uint8_t TIM7_flag = 0;
 
-DAC_Handle_t DAC_Handle;
+extern DAC_Handle_t DACxHandle;
 
 void buzzer_init (uint8_t DAC_channel)
 {
-	if (DAC_channel == DAC_CHANNEL_1){
+//	if (DAC_channel == DAC_CHANNEL_1){
+//
+//		/*configure GPIO PIN PA4*/
+//		GPIO_Pin_config_t GPIO_DAC_CH1_pin_config = {.pinNumber = GPIO_PIN_NO_4,.mode = GPIO_MODE_ANL,};
+//		GPIO_Handle_t GPIO_DAC_CH1_Handle = {GPIOA,GPIO_DAC_CH1_pin_config};
+//		GPIO_init(&GPIO_DAC_CH1_Handle);
+//
+//		/*initilize DAC channel 1*/
+//		static DAC_Config_t DAC_CH1_config = {.channel = DAC_CHANNEL_1,.resolution = DAC_RES_12_bits,.alignment = DAC_ALIGNMENT_RIGHT, .triggerEV = DAC_NO_TRIGGER_EV, .outputBuffer = DAC_OBUFFER_EN};
+//		DACxHandle.DACxPtr = DAC1;
+//		DACxHandle.DACxConfigPtr = &DAC_CH1_config;
+//		DAC_init(&DACxHandle);
+//
+//	}else if(DAC_channel == DAC_CHANNEL_2){
+//
+//		/*configure GPIO PIN PA5*/
+//		GPIO_Pin_config_t GPIO_DAC_CH2_pin_config = {.pinNumber = GPIO_PIN_NO_5,.mode = GPIO_MODE_ANL,};
+//		GPIO_Handle_t GPIO_DAC_CH2_Handle = {GPIOA,GPIO_DAC_CH2_pin_config};
+//		GPIO_init(&GPIO_DAC_CH2_Handle);
+//
+//		/*initilize DAC channel 2*/
+//		static DAC_Config_t DAC_CH2_config = {.channel = DAC_CHANNEL_2,.resolution = DAC_RES_12_bits,.alignment = DAC_ALIGNMENT_RIGHT, .triggerEV = DAC_NO_TRIGGER_EV, .outputBuffer = DAC_OBUFFER_EN};
+//		DACxHandle.DACxPtr = DAC1;
+//		DACxHandle.DACxConfigPtr = &DAC_CH2_config;
+//		DAC_init(&DACxHandle);
+//	}
 
-		/*configure GPIO PIN PA4*/
-		GPIO_Pin_config_t GPIO_DAC_CH1_pin_config = {.pinNumber = GPIO_PIN_NO_4,.mode = GPIO_MODE_ANL,};
-		GPIO_Handle_t GPIO_DAC_CH1_Handle = {GPIOA,GPIO_DAC_CH1_pin_config};
-		GPIO_init(&GPIO_DAC_CH1_Handle);
-		
-		/*initilize DAC channel 1*/
-		static DAC_Config_t DAC_CH1_config = {.channel = DAC_CHANNEL_1,.resolution = DAC_RES_12_bits,.alignment = DAC_ALIGNMENT_RIGHT, .triggerEV = DAC_NO_TRIGGER_EV, .outputBuffer = DAC_OBUFFER_EN};
-		DAC_Handle.DACxPtr = DAC1;
-		DAC_Handle.DACxConfigPtr = &DAC_CH1_config;
-		DAC_init(&DAC_Handle);
-		
-	}else if(DAC_channel == DAC_CHANNEL_2){
-		
-		/*configure GPIO PIN PA5*/
-		GPIO_Pin_config_t GPIO_DAC_CH2_pin_config = {.pinNumber = GPIO_PIN_NO_5,.mode = GPIO_MODE_ANL,};
-		GPIO_Handle_t GPIO_DAC_CH2_Handle = {GPIOA,GPIO_DAC_CH2_pin_config};
-		GPIO_init(&GPIO_DAC_CH2_Handle);
-		
-		/*initilize DAC channel 2*/
-		static DAC_Config_t DAC_CH2_config = {.channel = DAC_CHANNEL_2,.resolution = DAC_RES_12_bits,.alignment = DAC_ALIGNMENT_RIGHT, .triggerEV = DAC_NO_TRIGGER_EV, .outputBuffer = DAC_OBUFFER_EN};
-		DAC_Handle.DACxPtr = DAC1;
-		DAC_Handle.DACxConfigPtr = &DAC_CH2_config;
-		DAC_init(&DAC_Handle);
-	}
+	DAC_init_channel(DAC_channel);
 	
 	/*initilize TIM6,TIM7*/
 	TIM_Config_t TIMConfig = {.reloadVal = 1,.prescaler = TIM6_PRESCALE_VAL};
@@ -91,7 +93,7 @@ void buzzer_stop_sound (void)
 void TIM6_DAC_IRQHandler (void)
 {
 	TIM_intrpt_handler(TIM6);
-	DAC_write(&DAC_Handle,sineWaveTable[count++]);
+	DAC_write(&DACxHandle,sineWaveTable[count++]);
 	if(count == SAMPLE_NUM){
 		count = 0;
 	}

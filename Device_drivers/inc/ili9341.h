@@ -43,21 +43,21 @@ ILI9341 macro definition
 *ILI9341 chip enable input GPIO port & pin selection
 */
 #define ILI9341_CSX_PORT  GPIOD
-#define ILI9341_CSX_PIN	GPIO_PIN_NO_7
+#define ILI9341_CSX_PIN	GPIO_PIN_NO_6
 
 /*
 *@ILI9341_DCX
 *ILI9341 data/command input GPIO port & pin selection 
 */
 #define ILI9341_DCX_PORT  GPIOD
-#define ILI9341_DCX_PIN	GPIO_PIN_NO_6
+#define ILI9341_DCX_PIN	GPIO_PIN_NO_4
 
 /*
 *@ILI9341_RST
 *ILI9341 reset GPIO port & pin selection 
 */
 #define ILI9341_RST_PORT  GPIOD
-#define ILI9341_RST_PIN	GPIO_PIN_NO_5
+#define ILI9341_RST_PIN	GPIO_PIN_NO_2
 
 /*
 *@ILI9341_COMMAND

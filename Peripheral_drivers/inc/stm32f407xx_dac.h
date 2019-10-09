@@ -8,11 +8,18 @@
 *@date 19/08/2019
 */
 
+/*
+ *@Version 1.1
+ *Date 21/09/2019
+ *Add DAC_init_channel function
+ */
+
 #ifndef STM32F407XX_DAC_H
 #define STM32F407XX_DAC_H
 
 #include "stm32f407xx.h"                  // Device header
 #include "stm32f407xx_common_macro.h"
+#include "stm32f407xx_gpio.h"
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -110,17 +117,32 @@ void DAC_periph_ctr(DAC_Handle_t *DACxHandlePtr, uint8_t enOrDis);
 void DAC_init(DAC_Handle_t *DACxHandlePtr);
 
 /**
-*@brief Deinitialize DAC 
-*@param Pointer to DAC Handle struct
-*@return none
+*@brief 	Initialize DAC channel (channel 1 or channel 2)
+*
+*This initilize DAC channel 1 ( or channel 2 ) with following configurations:
+*	12-bits resolution
+*	Right data alignment
+*	No trigger event
+*	Output buffer enabled
+*
+*@param 	Channel
+*@return 	None
+*/
+void DAC_init_channel(uint8_t channel);
+
+/**
+*@brief 	Deinitialize DAC
+*@param 	Pointer to DAC Handle struct
+*@return 	None
 */
 void DAC_deinit(DAC_TypeDef *DACxPtr);
 
 /**
-*@brief write digital value to DAC for conversion
-*@param Pointer to DAC handle struct
-*@param Pointer to digital value
-*@return none
+*@brief 	Write digital value to DAC for conversion
+*@param 	Pointer to DAC handle struct
+*@param 	Digital value
+*@return 	None
 */
 void DAC_write(DAC_Handle_t *DACxHandlePtr, uint16_t digiVal);
+
 #endif

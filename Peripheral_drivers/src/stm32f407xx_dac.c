@@ -10,6 +10,9 @@
 
 #include "../inc/stm32f407xx_dac.h"
 
+DAC_Handle_t DACxHandle;
+DAC_Config_t DACxConfig;
+
 /***********************************************************************
 DAC clock enable/disable
 ***********************************************************************/
@@ -50,7 +53,7 @@ void DAC_init(DAC_Handle_t *DACxHandlePtr)
 	/*enable clock for DAC peripheral*/
 	DAC_CLK_ctr(DACxHandlePtr->DACxPtr,ENABLE);
 	
-	/*disable DAC peripheral for initilization*/
+	/*disable DAC peripheral for initialization*/
 	DAC_periph_ctr(DACxHandlePtr,DISABLE);
 	
 	/*DAC channel trigger configuration*/
@@ -85,6 +88,33 @@ void DAC_init(DAC_Handle_t *DACxHandlePtr)
 }
 
 /***********************************************************************
+Initialize DAC channel
+***********************************************************************/
+void DAC_init_channel(uint8_t channel)
+{
+	if(channel == DAC_CHANNEL_1){
+		GPIO_init_direct(GPIOA,GPIO_PIN_NO_4,GPIO_MODE_ANL,GPIO_OUTPUT_VERY_HIGH_SPEED,GPIO_OUTPUT_TYPE_PP,GPIO_NO_PUPDR,0);
+	}else if(channel == DAC_CHANNEL_2){
+		GPIO_init_direct(GPIOA,GPIO_PIN_NO_5,GPIO_MODE_ANL,GPIO_OUTPUT_VERY_HIGH_SPEED,GPIO_OUTPUT_TYPE_PP,GPIO_NO_PUPDR,0);
+	}
+
+	DACxConfig.resolution 	= DAC_RES_12_bits;
+	DACxConfig.alignment  	= DAC_ALIGNMENT_RIGHT;
+	DACxConfig.triggerEV = DAC_NO_TRIGGER_EV;
+	DACxConfig.outputBuffer = DAC_OBUFFER_EN;
+
+	if(channel == DAC_CHANNEL_1){
+		DACxConfig.channel = DAC_CHANNEL_1;
+	}else if (channel == DAC_CHANNEL_2){
+		DACxConfig.channel = DAC_CHANNEL_2;
+	}
+
+	DACxHandle.DACxConfigPtr = &DACxConfig;
+	DACxHandle.DACxPtr = DAC;
+	DAC_init(&DACxHandle);
+}
+
+/***********************************************************************
 Deinitialize DAC
 ***********************************************************************/
 void DAC_deinit(DAC_TypeDef *DACxPtr)
@@ -100,7 +130,7 @@ void DAC_write(DAC_Handle_t *DACxHandlePtr, uint16_t digiVal)
 {
 	uint8_t resolution = DACxHandlePtr->DACxConfigPtr->resolution;
 	uint8_t channel = DACxHandlePtr->DACxConfigPtr->channel;
-	
+
 	if(channel == DAC_CHANNEL_1){
 		/*case 8 bits DAC resolution*/
 		if(resolution == DAC_RES_8_bits){
@@ -113,7 +143,7 @@ void DAC_write(DAC_Handle_t *DACxHandlePtr, uint16_t digiVal)
 			}else{
 				DACxHandlePtr->DACxPtr->DHR12R1 = digiVal & 0xFFF;
 			}
-		} 
+		}
 	}else if(channel == DAC_CHANNEL_2){
 		/*case 8 bits DAC resolution*/
 		if(resolution == DAC_RES_8_bits){
@@ -126,7 +156,6 @@ void DAC_write(DAC_Handle_t *DACxHandlePtr, uint16_t digiVal)
 			}else{
 				DACxHandlePtr->DACxPtr->DHR12R2 = digiVal & 0xFFF;
 			}
-		} 
+		}
 	}
 }
-	

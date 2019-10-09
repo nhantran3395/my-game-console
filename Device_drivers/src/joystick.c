@@ -16,8 +16,8 @@ Initilize joystick
 ***********************************************************************/
 void joystick_init(ADC_TypeDef *ADCxPtr, uint8_t X_axis_ADC_channel, uint8_t Y_axis_ADC_channel)
 {
-	ADC_init_channel(ADC1,X_axis_ADC_channel);
-	ADC_init_channel(ADC1,Y_axis_ADC_channel);
+	ADC_init_channel(ADCxPtr,X_axis_ADC_channel);
+	ADC_init_channel(ADCxPtr,Y_axis_ADC_channel);
 }
 
 /***********************************************************************
@@ -34,8 +34,8 @@ Read joystick direction
 uint8_t joystick_read_direction(ADC_TypeDef *ADCxPtr, uint8_t X_axis_ADC_channel, uint8_t Y_axis_ADC_channel)
 {
 	int8_t xDir = 0, yDir = 0;
-	uint16_t xPos = ADC_read(ADC1,X_axis_ADC_channel);
-	uint16_t yPos = ADC_read(ADC1,Y_axis_ADC_channel);
+	uint16_t xPos = ADC_read(ADCxPtr,X_axis_ADC_channel);
+	uint16_t yPos = ADC_read(ADCxPtr,Y_axis_ADC_channel);
 	
 	if(xPos > X_POS_THRES_H){
 		xDir = X_DIR_RIGHT;
@@ -47,7 +47,7 @@ uint8_t joystick_read_direction(ADC_TypeDef *ADCxPtr, uint8_t X_axis_ADC_channel
 	
 	if(yPos > Y_POS_THRES_H){
 		yDir = Y_DIR_UP;
-	}else if(yPos < X_POS_THRES_L){
+	}else if(yPos < Y_POS_THRES_L){
 		yDir = Y_DIR_DOWN;
 	}else{
 		yDir = Y_DIR_CENTER;

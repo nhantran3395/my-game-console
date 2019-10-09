@@ -32,7 +32,7 @@ uint8_t ADCOutFlag = CLEAR;
 
 int main (void){
 	/*initilize joystick with x axis and y axis is ADC1 channel 7 & ADC1 channel 6*/
-	joystick_init(ADC1,ADC_CHANNEL_7,ADC_CHANNEL_6);
+	joystick_init(ADC1,ADC_CHANNEL_5,ADC_CHANNEL_7);
 		
 	/*initilize UART2 on PA2:PA3 (pins pack 1)*/
 	UART2HandlePtr = UART_general_init(USART2,UART_pins_pack_1,UART_BDR_9600,UART_STB_1,UART_WRDLEN_8_DT_BITS,UART_TX_RX,UART_NO_PARCTRL,UART_NO_FLOWCTRL);
@@ -52,27 +52,27 @@ int main (void){
 	
 	while(1){
 		if (ADCOutFlag == SET){
-			joystick_init(ADC1,ADC_CHANNEL_7,ADC_CHANNEL_6);
-			uint8_t jsDir = joystick_read_direction(ADC1,ADC_CHANNEL_7,ADC_CHANNEL_6);
+			joystick_init(ADC1,ADC_CHANNEL_5,ADC_CHANNEL_7);
+			uint8_t jsDir = joystick_read_direction(ADC1,ADC_CHANNEL_5,ADC_CHANNEL_7);
 			
 			if(jsDir == JS_DIR_LEFT_UP){
-				sprintf(str,"Direction: left up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: left up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_LEFT_DOWN){
-				sprintf(str,"Direction: left down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: left down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_LEFT){
-				sprintf(str,"Direction: left X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: left X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_RIGHT_DOWN){
-				sprintf(str,"Direction: right down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: right down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_RIGHT_UP){
-				sprintf(str,"Direction: right up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: right up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_RIGHT){
-				sprintf(str,"Direction: right X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: right X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_UP){
-				sprintf(str,"Direction: up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: up X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_DOWN){
-				sprintf(str,"Direction: down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: down X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}else if (jsDir == JS_DIR_CENTERED){
-				sprintf(str,"Direction: centered X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_7),ADC_read(ADC1,ADC_CHANNEL_6));
+				sprintf(str,"Direction: centered X:%d Y:%d\n\r",ADC_read(ADC1,ADC_CHANNEL_5),ADC_read(ADC1,ADC_CHANNEL_7));
 			}
 			
 			UART_send_intrpt(UART2HandlePtr,(uint8_t*)&str,strlen(str));

@@ -119,6 +119,14 @@ void TIM_deinit(TIM_TypeDef *TIMxPtr)
 }
 
 /***********************************************************************
+Reset timer counter
+***********************************************************************/
+void TIM_reset_counter(TIM_TypeDef *TIMxPtr)
+{
+	TIMxPtr->EGR |= TIM_EGR_UG;
+}
+
+/***********************************************************************
 Set timer 's reload value
 ***********************************************************************/
 void TIM_set_reload_val(TIM_TypeDef *TIMxPtr, uint16_t reloadVal)
