@@ -1,0 +1,1 @@
+This DIY game console created from STM32F4 Discovery Board that is associated with this repo was featured on https://www.hackster.io/thanh-nhan-tran/handheld-game-console-based-on-stm32f4-discovery-board-8d462f
